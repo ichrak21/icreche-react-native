@@ -8,6 +8,7 @@ target 'icreche' do
 
   # React Native and its dependencies
   pod 'FBLazyVector', :path => "#{rnPrefix}/Libraries/FBLazyVector"
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
   pod 'FBReactNativeSpec', :path => "#{rnPrefix}/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "#{rnPrefix}/Libraries/RCTRequired"
   pod 'RCTTypeSafety', :path => "#{rnPrefix}/Libraries/TypeSafety"
@@ -44,5 +45,7 @@ target 'icreche' do
   # react-native-cli autolinking
   use_native_modules!
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
 end

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ImageBackground,TouchableHighlight , Alert} from 'react-native';
+import { StyleSheet, ImageBackground,TouchableHighlight , Alert, AsyncStorage} from 'react-native';
 import Logo from "../assets/images/image.svg";
 import Id from "../assets/images/id.svg"
 import Password from "../assets/images/password.svg"
@@ -10,7 +10,7 @@ import { AppLoading } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import * as Yup from 'yup'
-import { Formik } from 'formik'
+import { Formik } from 'formik';
 
 const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
   })
 
 const axios = require('axios');
-const urlServer="https://www.kiuono.com/api/auth/";
+const urlServer="https://www.kiuono.com/api/";
 const image = { uri: "https://www.kiuono.com/creche/static/media/bg-enfants-creche.04e539f1.jpg" };
 
 export default class Login extends Component {
@@ -43,9 +43,13 @@ export default class Login extends Component {
           ...Ionicons.font,
         });
         this.setState({ isReady: true });
+       
+          // const data = await SyncStorage.init();
+          // console.log('AsyncStorage is ready!', data);
+
       }
       onClickListener = (viewId) => {
-        this.props.navigation.navigate("")
+        this.props.navigation.navigate("ListEnfant")
       }
       async loginUser(values) {
         var params = {
@@ -69,8 +73,9 @@ export default class Login extends Component {
           data: formData,
         };
         try {
-            const response = await  axios(urlServer+'oauth/token', options)
+            const response = await axios(urlServer+'auth/oauth/token', options)
             const res = await response
+            console.log(res)
             if (res.data.access_token){
                 var req = {
                     method: 'GET',
@@ -79,17 +84,21 @@ export default class Login extends Component {
                     'Authorization': 'Bearer '+ res.data.access_token
                     },
                 }
-                const response = await axios(urlServer+'me', req)
+                const response = await axios(urlServer+'enfant/creche/enfants', req)
                 const result = await response
-                console.log(result.data)
-                this.props.navigation.navigate("Home", {'user': result.data })
+                await AsyncStorage.setItem('token', res.data.access_token)
+                if(result.data.enfants.length >1){
+                  this.props.navigation.navigate("ListEnfant", {'user': result.data.enfants })
+                }else{
+                  this.props.navigation.navigate("Identiter", {'user': result.data.enfants })
+                }
+                
                 }
           } catch (error) {
             if(error.response.status == 400){
                 const error = ({
                     payload: "Login ou mot de passe incorrect"
                   });
-                  console.log(this.state.errorLogin)
                 return  this.setState({ errorLogin: error });
                
             }

@@ -21,9 +21,6 @@ export default class Home extends Component {
             <View style={styles.container }>
                <Text>{car.compteType}</Text>
                <Text>{car.name}</Text>
-               {/* <TouchableHighlight onPress={this.onClickListener()} underlayColor='transparent' style={{alignSelf: "center", marginTop:20,backgroundColor: 'transparent'}}>
-                 <Text style={styles.buttonText}> Valider </Text>
-              </TouchableHighlight> */}
             </View>
         )
     }

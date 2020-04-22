@@ -1,0 +1,121 @@
+"agenda": Object {
+    "date": "2020-04-22",
+    "statutDetails": Object {
+      "dateTime": "2020-04-22T11:20:38.636+02:00",
+      "statut": "ABSENT",
+    },
+  },
+  "biberon": Object {
+    "actif": true,
+    "frequence": 2,
+  },
+  "dateAcceptation": "2018-04-21",
+  "dateNaissance": "2018-04-22",
+  "horairesDetails": Object {
+    "horaires": Object {
+      "FRIDAY": Object {
+        "horaireDebut": "08:00:00",
+        "horaireFin": "18:30:00",
+        "ouvert": true,
+      },
+      "MONDAY": Object {
+        "horaireDebut": "08:00:00",
+        "horaireFin": "18:30:00",
+        "ouvert": true,
+      },
+      "SATURDAY": Object {
+        "ouvert": false,
+      },
+      "SUNDAY": Object {
+        "ouvert": false,
+      },
+      "THURSDAY": Object {
+        "horaireDebut": "08:00:00",
+        "horaireFin": "18:30:00",
+        "ouvert": true,
+      },
+      "TUESDAY": Object {
+        "horaireDebut": "08:00:00",
+        "horaireFin": "18:30:00",
+        "ouvert": true,
+      },
+      "WEDNESDAY": Object {
+        "horaireDebut": "08:00:00",
+        "horaireFin": "18:30:00",
+        "ouvert": true,
+      },
+    },
+    "infosUtiles": "Ferme le nouvel an",
+  },
+  "id": 2,
+  "liensParente": Array [
+    Object {
+      "couplageActif": true,
+      "parent": Object {
+        "adresse": Object {
+          "codePostal": "75012",
+          "pays": "FRANCE",
+          "rue": "19 rue Erard",
+          "ville": "Paris",
+        },
+        "email": "jihed.mansouri@gmail.com",
+        "etatCompte": "CONFIRMER",
+        "id": 1,
+        "nom": "mansouri",
+        "numeroTel": "+33658502481",
+        "prenom": "jihed",
+        "situation": "CELIBATAIRE",
+      },
+    },
+    Object {
+      "couplageActif": true,
+      "parent": Object {
+        "adresse": Object {
+          "codePostal": "75012",
+          "pays": "FRANCE",
+          "rue": "19 rue Erard",
+          "ville": "Paris",
+        },
+        "email": "marwa.ghabri@gmail.com",
+        "etatCompte": "CONFIRMER",
+        "id": 2,
+        "nom": "ghabri",
+        "numeroTel": "+33658502481",
+        "prenom": "marwa",
+        "situation": "CELIBATAIRE",
+      },
+    },
+  ],
+  "nom": "Kadjati",
+  "notifications": Object {
+    "nbNotifications": 2,
+    "notifications": Array [],
+  },
+  "poid": 0,
+  "prenom": "Raphaël",
+  "sexe": "MALE",
+  "taille": 80,
+  "tierceAutorises": Array [
+    Object {
+      "id": 102,
+      "lienDeParente": "Ami",
+      "nom": "anis",
+      "numeroTel": "0033754561604",
+      "prenom": "ben ahmed",
+    },
+    Object {
+      "id": 103,
+      "lienDeParente": "Ami",
+      "nom": "Alaa",
+      "numeroTel": "4654654658787",
+      "prenom": "ouni",
+    },
+    Object {
+      "id": 104,
+      "lienDeParente": "Ami",
+      "nom": "Kais",
+      "numeroTel": "7871212121211",
+      "prenom": "Hlioui",
+    },
+  ],
+}
