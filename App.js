@@ -4,6 +4,7 @@ import Login from './Components/Login'
 import Home from './Components/Home'
 import Identiter from './Components/Identiter'
 import ListEnfant from './Components/ListEnfant'
+import DrawerScreen from './Components/Menu'
 
 import {createStackNavigator, createAppContainer, StackActions, NavigationActions, createBottomTabNavigator, createSwitchNavigator, createDrawerNavigator} from 'react-navigation';
 console.disableYellowBox = true;
@@ -23,10 +24,14 @@ const AppNavigator = createStackNavigator({
 },{
     initialRouteName: 'Login',
 });
+const drawerNavigator = createDrawerNavigator({
+  AboutUs: { screen: Identiter }
+});
 
 const Navigator = createSwitchNavigator({
   Login: { screen: Login },
   Home: { screen: Home },
+  Drawer: {screen: drawerNavigator},
   Identiter: {screen: Identiter},
   ListEnfant: { screen: ListEnfant}
 });

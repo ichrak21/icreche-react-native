@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image,ScrollView, TouchableOpacity, ImageBackground, AsyncStorage, Header} from 'react-native'
-import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Container, Drawer ,Alert} from 'native-base';
+import { StyleSheet, View, Image,ScrollView, TouchableOpacity, ImageBackground, AsyncStorage, Alert} from 'react-native'
+import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Container, Drawer} from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import SrcBiberon from '../assets/images/etat-biberon-grey.svg';
 import SrcRepas from '../assets/images//etat-repas-grey.svg';
@@ -10,9 +10,6 @@ import SrcAlert from '../assets/images/etat-alert-grey.svg';
 import SrcMedicament from '../assets/images/etat-medicament-grey.svg';
 import Attendu from '../assets/images/attendu.svg';
 import Add from '../assets/images/add-white.svg';
-import Logo from '../assets/images/logo-kiuono.svg'
-import { StackNavigator } from "react-navigation";
-import SideBar from './SideBar';
 import idStorage from './idStorage';
 
 function jsUpperCaseFirst(string) {
@@ -23,11 +20,8 @@ export default class ListEnfant extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            
-          }
-
+        }
     }
-
     async componentDidMount() {
         if (this.props.navigation.state.params !== undefined) {
             Alert.alert("USER found", this.props.navigation.state.params.name);
@@ -40,7 +34,6 @@ export default class ListEnfant extends Component {
         await AsyncStorage.setItem('enf', JSON.stringify(c));
         this.props.navigation.navigate("Identiter" )       
     }
-    openDrawer () { this.drawer._root.open() };
     render() {
         const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
         const { navigation } = this.props;
@@ -60,7 +53,6 @@ export default class ListEnfant extends Component {
                         <CardItem cardBody style={{height: 100,borderRadius:15 }}>
                             <ImageBackground source={{uri: 'https://www.kiuono.com/creche/static/media/enfant-avatar.9664acf5.jpg'}} imageStyle={{  borderTopRightRadius:15, borderTopLeftRadius:15 }} style={{ height: "100%",flex:1}}>
                                 <TouchableOpacity 
-                                
                                     onPress={ () => { alert("handler here") }}>
                                         <LinearGradient colors={[ '#ffc061','#ff4f68']}  style={ styles.button } >
                                         <Add/>
@@ -99,15 +91,7 @@ export default class ListEnfant extends Component {
              
             <Container>
                 {/* <Drawer ref={(ref) => { this.drawer = ref; }} content={<SideBar navigator={this.navigator} />} onClose={() => this.closeDrawer()} > </Drawer> */}
-           <View style={styles.headerStyle }>  
-                <View style= {{flex: 1}}>
-                    <Logo style={ styles.titleStyle }/>
-                </View>          
-                <View>
-                    <Thumbnail small style={{right:5, marginTop: 10}} source={{uri: uri}} />
-                </View>
-                
-            </View>
+           
             <View style={styles.container}>
             
                  <ScrollView>
@@ -176,13 +160,6 @@ const styles = StyleSheet.create({
         width: 250, 
         borderRadius:15
       },
-      headerStyle: {
-        backgroundColor: 'white',
-        flexDirection: 'row',
-       
-        paddingTop :10,
-        
-    },
     backBtnStyle: {
         width: 25,
         left: 10

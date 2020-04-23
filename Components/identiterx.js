@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, AsyncStorage, TouchableOpacity, ScrollView} from 'react-native'
+import { StyleSheet, View, AsyncStorage, TouchableOpacity} from 'react-native'
 import { H1, Item, Input, Container, Button, Thumbnail, Right} from 'native-base';
 import idStorage from './idStorage';
 import DeleteLine from "../assets/images/icon-delete-line.svg"
@@ -15,6 +15,7 @@ import Header from './Header'
 
 const axios = require('axios');
 const urlServer="https://www.kiuono.com/api/";
+
 export default class Identiter extends Component {
     constructor(props) {
         super(props)
@@ -24,8 +25,6 @@ export default class Identiter extends Component {
             numJour: 0,
             horaire: '',
             newTierce: {},
-            PrenomNomTierce: null,
-            numeroTel: null,
             tierces: [],
             
         };
@@ -54,8 +53,9 @@ export default class Identiter extends Component {
         newTierces = Array.from(result.data.tierceAutorises, (tierce => Object.assign({}, tierce, { "PrenomNomTierce": toUpperCaseFirst(tierce.nom) + " " + toUpperCaseFirst(tierce.prenom) })))
         }
         this.setState({
-            tierces: newTierces
-        })
+            tierces: newTierces,
+            nomPrenomTierce: "" 
+          })
     }
     async returnToParents(){
         let c = await AsyncStorage.getItem('IdEnfant')
@@ -63,32 +63,23 @@ export default class Identiter extends Component {
         this.props.navigation.navigate("ListEnfant", {'id': c, 'enfant': JSON.parse(enfant), 'user':JSON.parse(enfant) } )
     }
     async showAddTierce() {
-        if (!_.isEmpty(this.state.PrenomNomTierce) && (!_.isEmpty(this.state.numeroTel))&& (!this.state.numeroTel.match(/^\+(?:[0-9] ?){4,14}[0-9]$/))) {
-            let nomParent = this.state.PrenomNomTierce.split(" ")
+        if (!_.isEmpty(this.state.newTierce.PrenomNomTierce) && (!_.isEmpty(this.state.newTierce.numeroTel))) {
+            let nomParent = this.state.newTierce.PrenomNomTierce.split(" ")
       
-            let newTierce = {
-                "id": "",
-                "nom": nomParent[0],
-                "prenom" : nomParent[1],
-                "numeroTel" : this.state.numeroTel,
-                "lienDeParente": "ami"
-            }
-            this.setState(prevState => ({
-                tierces: [...prevState.tierces, newTierce]
-              }))
-              let newlist=[]
-            for(let i = 0; i < this.state.tierces.length; i++){
-                newlist.push({
-                    "id": this.state.tierces[i].id,
-                    "nom": this.state.tierces[i].nom,
-                    "prenom" : this.state.tierces[i].prenom,
-                    "numeroTel" : this.state.tierces[i].numeroTel,
-                    "lienDeParente": "ami"
-                })
-            }
-            this.handleSubmitInfoTierce(newlist)
+            let newTierce = this.state.newTierce
+            newTierce.nom = nomParent[0]
+            newTierce.prenom = nomParent[1]
+            console.log("neeeew",newTierce)
+            
+      
+            this.setState((prevState) => ({
+              tierces: [...prevState.tierces, newTierce], showTierce: true,
+              newTierce: { id: "", numeroTel: "", lienDeParente: "Ami" }
+            }));
+            console.log("............",this.state.newTierce)
+            console.log('tiercees',this.state.tierces)
           }
-          
+          this.handleSubmitInfoTierce()
           
       }
       deleteTierce = (event, id) => {
@@ -97,20 +88,10 @@ export default class Identiter extends Component {
         this.setState((prevState) => ({
           tierces: [...newArray]
         }));
-        let newlist=[]
-            for(let i = 0; i < this.state.tierces.length; i++){
-                newlist.push({
-                    "id": this.state.tierces[i].id,
-                    "nom": this.state.tierces[i].nom,
-                    "prenom" : this.state.tierces[i].prenom,
-                    "numeroTel" : this.state.tierces[i].numeroTel,
-                    "lienDeParente": "ami"
-                })
-            }
-        this.handleSubmitInfoTierce(newlist)
       }
       
       onChangeAddTierceNom = (event) => {
+       
         event.persist();
         this.setState((prevState) => ({
           newTierce: { ...prevState.newTierce, ['PrenomNomTierce']: event.nativeEvent.text }
@@ -122,10 +103,10 @@ export default class Identiter extends Component {
           newTierce: { ...prevState.newTierce, ['numeroTel']: event.nativeEvent.text}
         }));
       }
-      async handleSubmitInfoTierce(newlist) {
+      async handleSubmitInfoTierce() {
     
         let data = {
-          "tiercesAutorises": newlist
+          "tiercesAutorises": this.state.tierces
         }
         let id = await idStorage.retrieveItem("IdEnfant")
         let token = await idStorage.retrieveItem("token")
@@ -141,9 +122,9 @@ export default class Identiter extends Component {
                 data: data
             }
             console.log('reeeq', req)
-            const response = await axios(urlServer+'enfant/creche/enfants/'+ id +'/tierces-autorises', req)
-            const result = await response
-            console.log(result)
+            // const response = await axios(urlServer+'creche/enfants/'+ id +'/tierces-autorises', req)
+            // const result = await response
+            // console.log(result)
       }
     
     render() {
@@ -163,8 +144,8 @@ export default class Identiter extends Component {
                             <Input placeholder='Rounded Textbox' value={this.state.user.tierceAutorises[i].numeroTel} style={styles.input}/>
                         </Item>
                         <TouchableOpacity 
-                            onPress={e => this.deleteTierce(e, this.state.user.tierceAutorises[i].id)} style={ styles.button } >
-                                <LinearGradient colors={[ '#ff5b67','#ff5b67']} style={ styles.btnDelete}  >
+                            onPress={ () => {e => this.deleteTierce(e, this.state.user.tierceAutorises[i].id)}} style={ styles.button } >
+                                <LinearGradient colors={[ '#ff5b67','#ff5b67']}  >
                                     <DeleteLine/>
                                 </LinearGradient>
                         </TouchableOpacity>
@@ -184,7 +165,6 @@ export default class Identiter extends Component {
         return (
             <Container>
                 <Header/>
-                <ScrollView>
             <View style={styles.container}>
             {this.state.user ?
             <View style={{alignSelf: "center"}}>
@@ -225,15 +205,15 @@ export default class Identiter extends Component {
                     <View style={styles.buttons_container}> 
                         <Item rounded style={[styles.inputContainer, {width: '43%'}]} >
                             <Nom style={styles.inputIcon} /> 
-                            <Input placeholder='Prénom NOM' style={styles.input} onChangeText={(PrenomNomTierce) => this.setState({PrenomNomTierce})}  value={this.state.PrenomNomTierce}/>
+                            <Input placeholder='Prénom NOM' style={styles.input} onChange={this. onChangeAddTierceNom}  value={this.state.newTierce.PrenomNomTierce}/>
                         </Item>
                         <Item rounded style={[styles.inputContainer, {width: '43%'}]} >
                             <Tel style={styles.inputIcon}/>
-                            <Input placeholder='XX XX XX XX XX' style={styles.input} onChangeText={(numeroTel) => this.setState({numeroTel})} value={this.state.numeroTel}/>
+                            <Input placeholder='XX XX XX XX XX' style={styles.input} onChange={this. onChangeAddTierceTel} value={this.state.newTierce.numeroTel}/>
                         </Item>
                         <TouchableOpacity 
                             onPress={ () => { this.showAddTierce() }} style={ styles.button }>
-                            <LinearGradient colors={[ '#00c5a7','#00c5a7']}  style={ styles.btn } >
+                            <LinearGradient colors={[ '#00c5a7','#00c5a7']}   >
                                 <AddLine/>
                             </LinearGradient>
                         </TouchableOpacity>
@@ -242,8 +222,7 @@ export default class Identiter extends Component {
             </View>
             </View>
              : <View/>}
-            </View>  
-            </ScrollView>       
+            </View>         
         </Container>
         )
     }
@@ -285,6 +264,8 @@ const styles = StyleSheet.create({
             fontSize: 12,
         },
         button:{
+            width:40,
+            height:40,
             backgroundColor:'red',
             alignItems:'center',
             justifyContent:'center',
@@ -294,8 +275,7 @@ const styles = StyleSheet.create({
             top:12,
             right: 0,
             left: '92%'
-        },
-        
+          },
 })
 
 
