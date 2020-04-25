@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, AsyncStorage, TouchableOpacity, ScrollView} from 'react-native'
-import { H1, Item, Input, Container, Button, Thumbnail, Right} from 'native-base';
+import { StyleSheet, View, AsyncStorage, TouchableOpacity, ScrollView, TouchableHighlight,Text} from 'react-native'
+import { H1, Item, Input, Container, Thumbnail, Drawer, Button} from 'native-base';
 import idStorage from './idStorage';
 import DeleteLine from "../assets/images/icon-delete-line.svg"
 import AddLine from "../assets/images/icon-add-line.svg"
@@ -12,10 +12,22 @@ import { LinearGradient } from 'expo-linear-gradient';
 import _ from 'lodash';
 import { toUpperCaseFirst } from "./ReactConst";
 import Header from './Header'
+import Sidebar from './SideBar';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
+import IconPhoto from '../assets/images/icon-photo.svg';
 
 const axios = require('axios');
 const urlServer="https://www.kiuono.com/api/";
+
 export default class Identiter extends Component {
+    closeDrawer = () => {
+        this.drawer._root.close()
+      };
+      openDrawer = () => {
+        this.drawer._root.open()
+      };
     constructor(props) {
         super(props)
         this.state = {
@@ -27,8 +39,10 @@ export default class Identiter extends Component {
             PrenomNomTierce: null,
             numeroTel: null,
             tierces: [],
+            image: null
             
         };
+        this._pickImage = this._pickImage.bind(this)
         this.showAddTierce = this.showAddTierce.bind(this);
         this.deleteTierce = this.deleteTierce.bind(this)
     }
@@ -44,8 +58,9 @@ export default class Identiter extends Component {
             'Authorization': 'Bearer '+ token
             },
         }
-        const response = await axios(urlServer+'enfant/creche/enfants/'+ id, req)
+        const response = await axios(urlServer+'enfant/parent/enfants/'+ id, req)
         const result = await response
+        console.log("resuuult",result.data)
         this.setState({
             user: result.data
         })
@@ -57,7 +72,32 @@ export default class Identiter extends Component {
         this.setState({
             tierces: newTierces
         })
+        this.getPermissionAsync();
     }
+
+    async getPermissionAsync () {
+        if (Constants.platform.ios) {
+          const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+          if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to make this work!');
+          }
+        }
+      };
+      async _pickImage() {
+       
+          let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+          });
+          if (!result.cancelled) {
+              console.log("resssss.uri",result.uri)
+            this.setState({ image: result.uri });
+          }
+          console.log(result)
+      };
+
     async returnToParents(){
         let c = await AsyncStorage.getItem('IdEnfant')
         let enfant = await AsyncStorage.getItem('enf')
@@ -95,9 +135,12 @@ export default class Identiter extends Component {
       deleteTierce = (event, id) => {
         let newArray = [];
         newArray = this.state.tierces.filter(element => element.id !== id);
-        this.setState((prevState) => ({
-          tierces: [...newArray]
-        }));
+        console.log("new Array",newArray)
+        
+        //   tierces: [...newArray]
+        this.state.tierces= newArray
+       
+        console.log('this.state',this.state.tierces)
         let newlist=[]
             for(let i = 0; i < this.state.tierces.length; i++){
                 newlist.push({
@@ -141,14 +184,29 @@ export default class Identiter extends Component {
             console.log('reeeq', req)
             const response = await axios(urlServer+'enfant/creche/enfants/'+ id +'/tierces-autorises', req)
             const result = await response
+            this.componentDidMount()
+            this.state.PrenomNomTierce = null
+            this.state.numeroTel = null
       }
       
     
     render() {
         const uri = "https://www.kiuono.com/creche/static/media/enfant-avatar.9664acf5.jpg";
         let listeTiers =[]
-        
+        let { image } = this.state;
+        let imageProfile =[]
         if (this.state.user){
+            imageProfile.push(
+            <View>
+                <View style={{justifyContent: "center"}}>
+                    {image ?<Thumbnail large source={{uri: image}} />: <Thumbnail large source={{uri: uri}} />}
+                    <Button rounded style={{ justifyContent: 'center' , backgroundColor: '#ffc061' , marginLeft: 25,width: 40}} onPress={this._pickImage}>
+                        <IconPhoto />
+                    </Button>
+                </View>
+                
+            </View>)
+            if(this.state.user.tierceAutorises){
             for(let i = 0; i < this.state.user.tierceAutorises.length; i++){
                 listeTiers.push(
                     <View style={styles.buttons_container}> 
@@ -168,7 +226,7 @@ export default class Identiter extends Component {
                         </TouchableOpacity>
                     </View>
                 )
-            } 
+            } }
             this.state.horaire = ""
             this.state.numJour = Array.from(_.values(this.state.user.horairesDetails.horaires)).reduce((accu, element) => {
                 if (element.ouvert) { this.state.horaire = (element.horaireDebut && element.horaireDebut.charAt(0) === '0' ? element.horaireDebut.slice(1, 2) : element.horaireDebut.slice(0, 2)) + "h-" + element.horaireFin.slice(0, 2) + "h" }
@@ -178,15 +236,21 @@ export default class Identiter extends Component {
         }else{
             listeTiers.push(<View></View>)
         }
+        
         return (
             <Container>
-                <Header/>
+                 <Drawer
+                ref={(ref) => { this.drawer = ref; }}
+                content={<Sidebar/>}
+                onClose={() => this.closeDrawer()} >
+
+                <Header openDrawer={this.openDrawer.bind(this.props)}/>
                 <ScrollView>
             <View style={styles.container}>
             {this.state.user ?
             <View style={{alignSelf: "center"}}>
                 <View style={{alignItems: 'center'}}>
-                    <Thumbnail large source={{uri: uri}} />
+                    {imageProfile}
                     <H1 style={{alignItems: 'center',fontWeight: 'bold'}}>Informations sur l'enfant</H1>
                     <View style={styles.buttons_container}> 
                         <Item rounded style={[styles.inputContainer,{width: '46%'}]} >
@@ -229,7 +293,7 @@ export default class Identiter extends Component {
                             <Input placeholder='XX XX XX XX XX' style={styles.input} onChangeText={(numeroTel) => this.setState({numeroTel})} value={this.state.numeroTel}/>
                         </Item>
                         <TouchableOpacity 
-                            onPress={ () => { this.showAddTierce(), this.componentDidMount() }} style={ styles.button }>
+                            onPress={ () => { this.showAddTierce() }} style={ styles.button }>
                             <LinearGradient colors={[ '#00c5a7','#00c5a7']}  style={ styles.btn } >
                                 <AddLine/>
                             </LinearGradient>
@@ -240,7 +304,8 @@ export default class Identiter extends Component {
             </View>
              : <View/>}
             </View>  
-            </ScrollView>       
+            </ScrollView>
+            </Drawer>       
         </Container>
         )
     }

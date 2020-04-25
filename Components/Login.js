@@ -84,7 +84,7 @@ export default class Login extends Component {
                     'Authorization': 'Bearer '+ res.data.access_token
                     },
                 }
-                const response = await axios(urlServer+'enfant/creche/enfants', req)
+                const response = await axios(urlServer+'enfant/parent/enfants', req)
                 const result = await response
                 await AsyncStorage.setItem('token', res.data.access_token)
                 if(result.data.enfants.length >1){

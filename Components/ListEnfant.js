@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image,ScrollView, TouchableOpacity, ImageBackground, AsyncStorage, Alert} from 'react-native'
-import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Container, Drawer} from 'native-base';
+import { Card, CardItem, Thumbnail, Text, Button,  Left, Body, Right, Container, Header} from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import SrcBiberon from '../assets/images/etat-biberon-grey.svg';
 import SrcRepas from '../assets/images//etat-repas-grey.svg';
@@ -10,8 +10,11 @@ import SrcAlert from '../assets/images/etat-alert-grey.svg';
 import SrcMedicament from '../assets/images/etat-medicament-grey.svg';
 import Attendu from '../assets/images/attendu.svg';
 import Add from '../assets/images/add-white.svg';
+import Logo from '../assets/images/logo-kiuono.svg';
 import idStorage from './idStorage';
 
+const axios = require('axios');
+const urlServer="https://www.kiuono.com/api/";
 function jsUpperCaseFirst(string) {
     return string.charAt(0).toUpperCase();
 }
@@ -20,12 +23,23 @@ export default class ListEnfant extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            data: null
         }
     }
     async componentDidMount() {
-        if (this.props.navigation.state.params !== undefined) {
-            Alert.alert("USER found", this.props.navigation.state.params.name);
-          }
+        let token = await idStorage.retrieveItem("token")
+        var req = {
+            method: 'GET',
+            headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer '+ token
+            },
+        }
+        const response = await axios(urlServer+'enfant/creche/enfants', req)
+        const result = await response
+        console.log(result)
+       
+
       }
     async Enfant(id){
         await idStorage.saveItem('IdEnfant', id.toString());
@@ -35,7 +49,7 @@ export default class ListEnfant extends Component {
         this.props.navigation.navigate("Identiter" )       
     }
     render() {
-        const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
+        const uri = "https://www.kiuono.com/creche/static/media/enfant-avatar.9664acf5.jpg";
         const { navigation } = this.props;
         let enfant
         const id = navigation.getParam('id')
@@ -57,7 +71,6 @@ export default class ListEnfant extends Component {
                                         <LinearGradient colors={[ '#ffc061','#ff4f68']}  style={ styles.button } >
                                         <Add/>
                                     </LinearGradient>
-                                
                                 </TouchableOpacity>
                             </ImageBackground>
                             
@@ -90,7 +103,18 @@ export default class ListEnfant extends Component {
         return (
              
             <Container>
-                {/* <Drawer ref={(ref) => { this.drawer = ref; }} content={<SideBar navigator={this.navigator} />} onClose={() => this.closeDrawer()} > </Drawer> */}
+               <Header style={{ backgroundColor: 'transparent'}}>
+                <Body style={{ justifyContent :'center'}}>
+                    <View >
+                    <Logo/>
+                    </View>
+                </Body>
+                <Right>
+                    <Button transparent>
+                        <Thumbnail small source={{uri: uri}} /> 
+                    </Button>
+                </Right>
+            </Header>
            
             <View style={styles.container}>
             
@@ -103,23 +127,6 @@ export default class ListEnfant extends Component {
         )
     }
 }
-// ListEnfant.navigationOptions = ({ navigation }) => {
-//     return {
-//       header: (
-//         <Header>
-//           <Left>
-//             <Button transparent onPress={() => navigation.navigate("DrawerOpen")}>
-//               <Icon name="menu" />
-//             </Button>
-//           </Left>
-//           <Body>
-//             <Text>hello</Text>
-//           </Body>
-//           <Right />
-//         </Header>
-//       )
-//     };
-//   };
 const styles = StyleSheet.create({
     container: {
         flex: 1,

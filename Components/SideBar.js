@@ -1,62 +1,110 @@
-import React from "react";
-import { AppRegistry, Image, StatusBar } from "react-native";
+import React, { Component } from 'react';
 import {
-  Button,
-  Text,
-  Container,
-  List,
-  ListItem,
-  Content,
-  Icon
-} from "native-base";
-const routes = ["Home", "Chat", "Profile"];
-export default class SideBar extends React.Component {
+  ScrollView, Text, View, StyleSheet, Alert
+} from 'react-native';
+
+import {Content} from 'native-base';
+import {NavigationActions} from 'react-navigation';
+import { StackNavigator } from 'react-navigation';
+
+import PropTypes from 'prop-types';
+
+
+const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#fff',
+  },
+  heading: {
+      fontSize: 20,
+      textAlign: 'center',
+      margin: 10,
+  },
+  menuItem:{
+      padding: 20,
+      borderWidth: 0.5,
+      borderColor: '#d6d7da'
+  }
+});
+
+class Sidebar extends Component {
+  constructor(props){
+    super(props)
+    this.navigate  = props.navigation;
+  }
+  navigateToScreen = (route) => () => {
+    const navigateAction = NavigationActions.navigate({
+      routeName: route
+    });
+    console
+    this.props.navigation.dispatch(navigateAction);
+    this.props.navigation.dispatch(DrawerActions.closeDrawer())
+  }
+
   render() {
+    console.log(this.props)
+    // const { navigate } = this.props.navigation;
     return (
-      <Container>
-        <Content>
-          <Image
-            source={{
-              uri:
-                "https://raw.githubusercontent.com/GeekyAnts/NativeBase-KitchenSink/master/assets/drawer-cover.png"
-            }}
-            style={{
-              height: 120,
-              width: "100%",
-              alignSelf: "stretch",
-              position: "absolute"
-            }}
-          />
-          <Image
-            square
-            style={{
-              height: 80,
-              width: 70,
-              position: "absolute",
-              alignSelf: "center",
-              top: 20
-            }}
-            source={{
-              uri:
-                "https://raw.githubusercontent.com/GeekyAnts/NativeBase-KitchenSink/master/assets/logo.png"
-            }}
-          />
-          <List
-            dataArray={routes}
-            contentContainerStyle={{ marginTop: 120 }}
-            renderRow={data => {
-              return (
-                <ListItem
-                  button
-                  onPress={() => this.props.navigation.navigate(data)}
-                >
-                  <Text>{data}</Text>
-                </ListItem>
-              );
-            }}
-          />
-        </Content>
-      </Container>
+          <Content style={{backgroundColor:'#FFFFFF'}}>
+            <View>
+              <ScrollView>
+                <View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                      Journée
+                    </Text>
+                  </View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                    Identité
+                    </Text>
+                  </View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                    Hitorique Médical
+                    </Text>
+                  </View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                    Aliments
+                    </Text>
+                  </View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                    Planning
+                    </Text>
+                  </View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                    Historique Evénements
+                    </Text>
+                  </View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                    Message
+                    </Text>
+                  </View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                    Communauté
+                    </Text>
+                  </View>
+                  <View style={styles.menuItem}>
+                    <Text >
+                    Créche
+                    </Text>
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
+          </Content>
     );
   }
 }
+Sidebar.propTypes = {
+  navigation: PropTypes.object
+};
+
+export default Sidebar;

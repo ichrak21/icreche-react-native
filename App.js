@@ -7,6 +7,7 @@ import ListEnfant from './Components/ListEnfant'
 import DrawerScreen from './Components/Menu'
 
 import {createStackNavigator, createAppContainer, StackActions, NavigationActions, createBottomTabNavigator, createSwitchNavigator, createDrawerNavigator} from 'react-navigation';
+import { Container } from 'native-base';
 console.disableYellowBox = true;
 const AppNavigator = createStackNavigator({
   Home: {
@@ -37,4 +38,9 @@ const Navigator = createSwitchNavigator({
 });
 
 const App = createAppContainer(Navigator);
-export default App;
+export default App
+// export default class App extends Container {
+//   render(){
+//     return <Navigator/>
+//   }
+// }

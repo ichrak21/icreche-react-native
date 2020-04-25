@@ -11,7 +11,7 @@ import Naissance from "../assets/images/icon-naissance.svg"
 import { LinearGradient } from 'expo-linear-gradient';
 import _ from 'lodash';
 import { toUpperCaseFirst } from "./ReactConst";
-import Header from './Header'
+import Menu from './Header'
 
 const axios = require('axios');
 const urlServer="https://www.kiuono.com/api/";
@@ -164,7 +164,7 @@ export default class Identiter extends Component {
         }
         return (
             <Container>
-                <Header/>
+                <Menu/>
             <View style={styles.container}>
             {this.state.user ?
             <View style={{alignSelf: "center"}}>
