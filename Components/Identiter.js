@@ -106,7 +106,7 @@ export default class Identiter extends Component {
     async showAddTierce() {
         if (!_.isEmpty(this.state.PrenomNomTierce) && (!_.isEmpty(this.state.numeroTel))&& (!this.state.numeroTel.match(/^\+(?:[0-9] ?){4,14}[0-9]$/))) {
             let nomParent = this.state.PrenomNomTierce.split(" ")
-      
+
             let newTierce = {
                 "id": "",
                 "nom": nomParent[0],
@@ -114,11 +114,11 @@ export default class Identiter extends Component {
                 "numeroTel" : this.state.numeroTel,
                 "lienDeParente": "ami"
             }
-            
+
             this.setState({
                 tierces: this.state.tierces.push(newTierce)
             }) //[...prevState.tierces, newTierce]
-            
+
               let newlist=[]
             for(let i = 0; i < this.state.tierces.length; i++){
                 newlist.push({
@@ -130,16 +130,16 @@ export default class Identiter extends Component {
                 })
             }
             this.handleSubmitInfoTierce(newlist)
-          }          
+          }
       }
       deleteTierce = (event, id) => {
         let newArray = [];
         newArray = this.state.tierces.filter(element => element.id !== id);
         console.log("new Array",newArray)
-        
+
         //   tierces: [...newArray]
         this.state.tierces= newArray
-       
+
         console.log('this.state',this.state.tierces)
         let newlist=[]
             for(let i = 0; i < this.state.tierces.length; i++){
@@ -153,7 +153,7 @@ export default class Identiter extends Component {
             }
         this.handleSubmitInfoTierce(newlist)
       }
-      
+
       onChangeAddTierceNom = (event) => {
         event.persist();
         this.setState((prevState) => ({
@@ -167,7 +167,7 @@ export default class Identiter extends Component {
         }));
       }
       async handleSubmitInfoTierce(newlist) {
-    
+
         let data = {
           "tiercesAutorises": newlist
         }
@@ -188,8 +188,7 @@ export default class Identiter extends Component {
             this.state.PrenomNomTierce = null
             this.state.numeroTel = null
       }
-      
-    
+
     render() {
         const uri = "https://www.kiuono.com/creche/static/media/enfant-avatar.9664acf5.jpg";
         let listeTiers =[]
@@ -204,7 +203,7 @@ export default class Identiter extends Component {
                         <IconPhoto />
                     </Button>
                 </View>
-                
+
             </View>)
             if(this.state.user.tierceAutorises){
             for(let i = 0; i < this.state.user.tierceAutorises.length; i++){
@@ -231,12 +230,12 @@ export default class Identiter extends Component {
             this.state.numJour = Array.from(_.values(this.state.user.horairesDetails.horaires)).reduce((accu, element) => {
                 if (element.ouvert) { this.state.horaire = (element.horaireDebut && element.horaireDebut.charAt(0) === '0' ? element.horaireDebut.slice(1, 2) : element.horaireDebut.slice(0, 2)) + "h-" + element.horaireFin.slice(0, 2) + "h" }
                 return element.ouvert ? accu + 1 : accu;
-              }, 0)   
-             
+              }, 0)
+
         }else{
             listeTiers.push(<View></View>)
         }
-        
+
         return (
             <Container>
                  <Drawer
@@ -303,9 +302,9 @@ export default class Identiter extends Component {
             </View>
             </View>
              : <View/>}
-            </View>  
+            </View>
             </ScrollView>
-            </Drawer>       
+            </Drawer>
         </Container>
         )
     }
@@ -314,7 +313,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-       
+
     },
     buttons_container: {
         flexDirection: 'row',
@@ -357,7 +356,7 @@ const styles = StyleSheet.create({
             right: 0,
             left: '92%'
         },
-        
+
 })
 
 
