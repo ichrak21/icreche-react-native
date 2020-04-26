@@ -58,7 +58,7 @@ export default class Identiter extends Component {
             'Authorization': 'Bearer '+ token
             },
         }
-        const response = await axios(urlServer+'enfant/parent/enfants/'+ id, req)
+        const response = await axios(urlServer+'enfant/creche/enfants/'+ id, req)
         const result = await response
         console.log("resuuult",result.data)
         this.setState({
