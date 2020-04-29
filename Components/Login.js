@@ -87,9 +87,13 @@ export default class Login extends Component {
                 const response = await axios(urlServer+'enfant/parent/enfants', req)
                 const result = await response
                 await AsyncStorage.setItem('token', res.data.access_token)
+                console.log("TRALALALALALAL TESTEST-+-+-+-123");
+                
                 if(result.data.enfants.length >1){
+                  console.log("TRALALALALALAL TESTEST-+-+-+-successsss 123546978");
                   this.props.navigation.navigate("ListEnfant", {'user': result.data.enfants })
                 }else{
+                  console.log("TRALALALALALAL TESTEST-+-+-+-negatif +-+-+-");
                   this.props.navigation.navigate("Identiter", {'user': result.data.enfants })
                 }
                 

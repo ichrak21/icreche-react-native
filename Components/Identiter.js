@@ -13,6 +13,7 @@ import _ from 'lodash';
 import { toUpperCaseFirst } from "./ReactConst";
 import Header from './Header'
 import Sidebar from './SideBar';
+import Parent from '../Services/Parent';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
@@ -40,16 +41,16 @@ export default class Identiter extends Component {
             numeroTel: null,
             tierces: [],
             image: null
-            
+
         };
         this._pickImage = this._pickImage.bind(this)
         this.showAddTierce = this.showAddTierce.bind(this);
         this.deleteTierce = this.deleteTierce.bind(this)
     }
-    
-    
+
     async componentDidMount() {
-        let id = await idStorage.retrieveItem("IdEnfant")
+        Parent.getChildrenOfParent
+        /* let id = await idStorage.retrieveItem("IdEnfant")
         let token = await idStorage.retrieveItem("token")
         var req = {
             method: 'GET',
@@ -71,7 +72,7 @@ export default class Identiter extends Component {
         console.log("newTiers", newTierces)
         this.setState({
             tierces: newTierces
-        })
+        }) */
         this.getPermissionAsync();
     }
 
