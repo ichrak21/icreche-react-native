@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import * as Yup from 'yup'
 import { Formik } from 'formik';
+import { URL, AUTH_AUTHORIZATION } from 'react-native-dotenv'
 
 const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -22,7 +23,6 @@ const validationSchema = Yup.object().shape({
   })
 
 const axios = require('axios');
-const urlServer="https://www.kiuono.com/api/";
 const image = { uri: "https://www.kiuono.com/creche/static/media/bg-enfants-creche.04e539f1.jpg" };
 
 export default class Login extends Component {
@@ -43,9 +43,6 @@ export default class Login extends Component {
           ...Ionicons.font,
         });
         this.setState({ isReady: true });
-       
-          // const data = await SyncStorage.init();
-          // console.log('AsyncStorage is ready!', data);
 
       }
       onClickListener = (viewId) => {
@@ -68,12 +65,13 @@ export default class Login extends Component {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic bXktdHJ1c3RlZC1jbGllbnQ6bXlzZWNyZXQ='
+            'Authorization': 'Basic '+ AUTH_AUTHORIZATION
           },
           data: formData,
         };
         try {
-            const response = await axios(urlServer+'auth/oauth/token', options)
+          console.log('URRRRL', AUTH_AUTHORIZATION)
+            const response = await axios(URL+'auth/oauth/token', options)
             const res = await response
             console.log(res)
             if (res.data.access_token){
@@ -84,14 +82,13 @@ export default class Login extends Component {
                     'Authorization': 'Bearer '+ res.data.access_token
                     },
                 }
-                const response = await axios(urlServer+'enfant/parent/enfants', req)
+                const response = await axios(URL+'enfant/parent/enfants', req)
                 const result = await response
                 await AsyncStorage.setItem('token', res.data.access_token)
                 console.log("TRALALALALALAL TESTEST-+-+-+-123");
                 
                 if(result.data.enfants.length >1){
-                  console.log("TRALALALALALAL TESTEST-+-+-+-successsss 123546978");
-                  this.props.navigation.navigate("ListEnfant", {'user': result.data.enfants })
+                  this.props.navigation.navigate("ListEnfant")
                 }else{
                   console.log("TRALALALALALAL TESTEST-+-+-+-negatif +-+-+-");
                   this.props.navigation.navigate("Identiter", {'user': result.data.enfants })
@@ -109,11 +106,9 @@ export default class Login extends Component {
           }
       }
     render() {
-       
-
-        if (!this.state.isReady) {
-            return <AppLoading />;
-          }
+      if (!this.state.isReady) {
+        return <AppLoading />;
+      }
       return (
         <Container>
            <ImageBackground source={image} style={styles.image}> 

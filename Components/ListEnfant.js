@@ -12,9 +12,9 @@ import Attendu from '../assets/images/attendu.svg';
 import Add from '../assets/images/add-white.svg';
 import Logo from '../assets/images/logo-kiuono.svg';
 import idStorage from './idStorage';
+import { URL } from 'react-native-dotenv';
 
 const axios = require('axios');
-const urlServer="https://www.kiuono.com/api/";
 function jsUpperCaseFirst(string) {
     return string.charAt(0).toUpperCase();
 }
@@ -23,7 +23,8 @@ export default class ListEnfant extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            data: null
+            data: null, 
+            enfant : []
         }
     }
     async componentDidMount() {
@@ -35,34 +36,30 @@ export default class ListEnfant extends Component {
             'Authorization': 'Bearer '+ token
             },
         }
-        const response = await axios(urlServer+'enfant/creche/enfants', req)
-        const result = await response
-        console.log(result)
-       
-
-      }
+        const response = await axios(URL+'enfant/parent/enfants', req)
+        const result = await response   
+        this.setState({
+            enfant : result.data.enfants
+        })
+         
+    }
     async Enfant(id){
+        console.log(id)
         await idStorage.saveItem('IdEnfant', id.toString());
-        const { navigation } = this.props;
-        let c = navigation.getParam('user');
-        await AsyncStorage.setItem('enf', JSON.stringify(c));
         this.props.navigation.navigate("Identiter" )       
+    }
+    async renderListEnfant(){
+        
+        
     }
     render() {
         const uri = "https://www.kiuono.com/creche/static/media/enfant-avatar.9664acf5.jpg";
-        const { navigation } = this.props;
-        let enfant
-        const id = navigation.getParam('id')
-        if(id== undefined){
-            enfant = navigation.getParam('user');
-        }else{
-            enfant = navigation.getParam('enfant');
-        }
         var listeEnfant = [];
+        console.log('enfaaaaaaaaaaant', this.state.enfant)
 
-	for(let i = 0; i < enfant.length; i++){
+	for(let i = 0; i < this.state.enfant.length; i++){
 		listeEnfant.push(
-                <TouchableOpacity style={styles.buttons_container}  onPress={() =>  this.Enfant(enfant[i].id )}>
+                <TouchableOpacity style={styles.buttons_container}  onPress={() =>  this.Enfant(this.state.enfant[i].id )} key = {i}>
                 <Card style={styles.cardNotActive}>
                         <CardItem cardBody style={{height: 100,borderRadius:15 }}>
                             <ImageBackground source={{uri: 'https://www.kiuono.com/creche/static/media/enfant-avatar.9664acf5.jpg'}} imageStyle={{  borderTopRightRadius:15, borderTopLeftRadius:15 }} style={{ height: "100%",flex:1}}>
@@ -82,8 +79,8 @@ export default class ListEnfant extends Component {
                                         <Attendu/>
                                     </View>
                                     <View >
-                                        <Text style={{borderRadius:20}}>{enfant[i].prenom  + " " + jsUpperCaseFirst(enfant[i].nom) + "."}</Text>
-                                        <Text style={{borderRadius:20}}>{enfant[i].agenda.statutDetails.statut}</Text>
+                                        <Text style={{borderRadius:20}}>{this.state.enfant[i].prenom  + " " + jsUpperCaseFirst(this.state.enfant[i].nom) + "."}</Text>
+                                        <Text style={{borderRadius:20}}>{this.state.enfant[i].agenda.statutDetails.statut}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.icons}>
@@ -105,14 +102,12 @@ export default class ListEnfant extends Component {
             <Container>
                <Header style={{ backgroundColor: 'transparent'}}>
                 <Body style={{ justifyContent :'center'}}>
-                    <View >
+                <Button transparent onPress={() =>  this.props.navigation.navigate('ListEnfant')}>
                     <Logo/>
-                    </View>
+                    </Button>
                 </Body>
                 <Right>
-                    <Button transparent>
-                        <Thumbnail small source={{uri: uri}} /> 
-                    </Button>
+                    <Thumbnail small source={{uri: uri}} /> 
                 </Right>
             </Header>
            
